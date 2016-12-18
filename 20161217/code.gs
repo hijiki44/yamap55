@@ -18,21 +18,18 @@ function myFunction() {
   var values = range.getValues();
   Logger.log(values);
 
-  var answerMap = {
-    "1月1日 会場A" : 0,
-    "1月2日 会場A" : 0,
-    "1月3日 会場B" : 0,
-    "1月4日 会場B" : 0,
-    "1月5日 会場C" : 0,
-  }
-
+  var answerMap = {}
+  
   // 回答数をカウント
   for (var i = 0; i < values.length; i++) {
     var answer = values[i][0];
+    if (!answerMap[answer]) {
+      answerMap[answer] = 0;
+    }
     answerMap[answer]++;
   }
   Logger.log(answerMap);
-
+  
   var form = FormApp.getActiveForm();
   var items = form.getItems();
   var item = null;
@@ -43,13 +40,13 @@ function myFunction() {
       break;
     }
   }
-
+  
   var resultAnswers = [];
   for (var key in maxCount) {
     var aCount = answerMap[key];
     var mCount = maxCount[key];
     Logger.log(key + " : " + aCount + " : " + mCount);
-    if (aCount < mCount) {
+    if (!aCount || aCount < mCount) {
       resultAnswers.push(item.createChoice(key));
     }
   }
