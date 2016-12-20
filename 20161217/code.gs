@@ -19,19 +19,21 @@ function myFunction() {
   Logger.log(values);
 
   var answerMap = {}
-  
+
   // 回答数をカウント
-  for (var i = 0; i < values.length; i++) {
-    var answer = values[i][0];
+  values.forEach(function(answers){
+    var answer = answers[0];
     if (!answerMap[answer]) {
       answerMap[answer] = 0;
     }
     answerMap[answer]++;
-  }
+  },0);
   Logger.log(answerMap);
-  
+
   var form = FormApp.getActiveForm();
   var items = form.getItems();
+
+  // gasでは Array.prototype.find == undifined
   var item = null;
   for (var i = 0; i < items.length; i++) {
     item = items[i];
@@ -40,15 +42,15 @@ function myFunction() {
       break;
     }
   }
-  
+
   var resultAnswers = [];
-  for (var key in maxCount) {
+  Object.keys(maxCount).forEach(function(key){
     var aCount = answerMap[key];
     var mCount = maxCount[key];
     Logger.log(key + " : " + aCount + " : " + mCount);
     if (!aCount || aCount < mCount) {
       resultAnswers.push(item.createChoice(key));
     }
-  }
+  });
   item.setChoices(resultAnswers);
 }
